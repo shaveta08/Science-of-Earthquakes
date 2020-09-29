@@ -5,9 +5,17 @@ var baseUrl =
 var Coords = [40.73, -74.0059];
 var mapZoomLevel = 2.5;
 var myMap, light, baseMaps;
+// Markers for the cluster Layer
+var markers = L.markerClusterGroup();
 // Create the createMap function
 
-function createMap(earthquakeLayer, legendLayer, platesLayer, heatLayer) {
+function createMap(
+	earthquakeLayer,
+	legendLayer,
+	platesLayer,
+	heatLayer,
+	markers
+) {
 	// Create the tile layer that will be the background of our map
 	light = L.tileLayer(
 		"https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}",
@@ -45,11 +53,17 @@ function createMap(earthquakeLayer, legendLayer, platesLayer, heatLayer) {
 		EarthQuake: earthquakeLayer,
 		TectonicPlates: platesLayer,
 		EarthquakesHeatLayer: heatLayer,
+		ClusterLayer: markers,
 	};
 	// Create the map object with options
 	myMap = L.map("map-id", {
 		center: Coords,
 		zoom: mapZoomLevel,
+		timeDimension: true,
+		timeDimensionControl: true,
+		timeDimensionOptions: {
+			// times: "2014-12-01T06:00:00Z,2014-12-01T09:00:00Z,2014-12-01T12:00:00Z,2014-12-01T15:00:00Z,2014-12-01T18:00:00Z,2014-12-01T21:00:00Z,2014-12-02T00:00:00Z,2014-12-02T03:00:00Z,2014-12-02T06:00:00Z,2014-12-02T09:00:00Z,2014-12-02T12:00:00Z,2014-12-02T15:00:00Z,2014-12-02T18:00:00Z,2014-12-02T21:00:00Z,2014-12-03T00:00:00Z,2014-12-03T03:00:00Z,2014-12-03T06:00:00Z,2014-12-03T09:00:00Z,2014-12-03T12:00:00Z,2014-12-03T15:00:00Z,2014-12-03T18:00:00Z,2014-12-03T21:00:00Z,2014-12-04T00:00:00Z,2014-12-04T03:00:00Z,2014-12-04T06:00:00Z,2014-12-04T12:00:00Z,2014-12-04T18:00:00Z,2014-12-05T00:00:00Z,2014-12-05T06:00:00Z,2014-12-05T12:00:00Z,2014-12-05T18:00:00Z,2014-12-06T00:00:00Z,2014-12-06T06:00:00Z,2014-12-06T12:00:00Z,2014-12-06T18:00:00Z,2014-12-07T00:00:00Z,2014-12-07T06:00:00Z,2014-12-07T12:00:00Z,2014-12-07T18:00:00Z,2014-12-08T00:00:00Z,2014-12-08T06:00:00Z,2014-12-08T12:00:00Z,2014-12-08T18:00:00Z,2014-12-09T00:00:00Z,2014-12-09T06:00:00Z,2014-12-09T12:00:00Z,2014-12-09T18:00:00Z,2014-12-10T00:00:00Z,2014-12-10T06:00:00Z"
+		},
 		layers: [light, earthquakeLayer],
 	});
 	legendLayer.addTo(myMap);
@@ -115,6 +129,19 @@ function createHeatLayer(geoData) {
 	});
 	return heat;
 }
+
+function createClusterLayer(geoData) {
+	geoData.features.forEach((feature) => {
+		// console.log(item);
+		var location = feature.geometry.coordinates;
+		var title = feature.properties.place;
+		var marker = L.marker(new L.latLng(location[1], location[0]), {
+			title: title,
+		});
+		marker.bindPopup(title);
+		markers.addLayer(marker);
+	});
+}
 // Perform an API call to the Citi Bike API to get station information. Call createMarkers when complete
 d3.json(baseUrl, function (geoData) {
 	d3.json("GeoJSON/PB2002_plates.json", function (bound) {
@@ -158,7 +185,7 @@ d3.json(baseUrl, function (geoData) {
 		});
 
 		var heatLayer = createHeatLayer(geoData);
-
-		createMap(earthquakeLayer, legendLayer, platesLayer, heatLayer);
+		createClusterLayer(geoData);
+		createMap(earthquakeLayer, legendLayer, platesLayer, heatLayer, markers);
 	});
 });
