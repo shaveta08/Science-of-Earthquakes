@@ -7,7 +7,7 @@ var mapZoomLevel = 2.5;
 var myMap, light, baseMaps;
 // Create the createMap function
 
-function createMap(earthquakeLayer, legendLayer, platesLayer) {
+function createMap(earthquakeLayer, legendLayer, platesLayer, heatLayer) {
 	// Create the tile layer that will be the background of our map
 	light = L.tileLayer(
 		"https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}",
@@ -44,6 +44,7 @@ function createMap(earthquakeLayer, legendLayer, platesLayer) {
 	var overlayMaps = {
 		EarthQuake: earthquakeLayer,
 		TectonicPlates: platesLayer,
+		EarthquakesHeatLayer: heatLayer,
 	};
 	// Create the map object with options
 	myMap = L.map("map-id", {
@@ -95,6 +96,25 @@ function createLegend() {
 	return legend;
 }
 
+function createHeatLayer(geoData) {
+	var heatArray = [];
+
+	for (var i = 0; i < geoData.features.length; i++) {
+		var location = geoData.features[i].geometry;
+
+		if (location) {
+			heatArray.push([location.coordinates[1], location.coordinates[0]]);
+		}
+	}
+
+	var heat = L.heatLayer(heatArray, {
+		radius: 25,
+		blur: 3,
+		maxZoom: 100,
+		gradient: { 0.25: "red", 0.5: "lime", 1: "yellow" },
+	});
+	return heat;
+}
 // Perform an API call to the Citi Bike API to get station information. Call createMarkers when complete
 d3.json(baseUrl, function (geoData) {
 	d3.json("GeoJSON/PB2002_plates.json", function (bound) {
@@ -137,6 +157,8 @@ d3.json(baseUrl, function (geoData) {
 			},
 		});
 
-		createMap(earthquakeLayer, legendLayer, platesLayer);
+		var heatLayer = createHeatLayer(geoData);
+
+		createMap(earthquakeLayer, legendLayer, platesLayer, heatLayer);
 	});
 });
