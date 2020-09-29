@@ -2,6 +2,7 @@
 The USGS is responsible for providing scientific data about natural hazards, the health of our ecosystems and environment; and the impacts of climate and land-use change. Their scientists develop new methods and tools to supply timely, relevant, and useful information about the Earth and its processes.
 They collect a massive amount of data from all over the world each day.
 We have used earthquake data of past 7 days to visulaize using leaflet and mapbox.
+Checkout the whole demo of this Project [here](https://shaveta08.github.io/Science-of-Earthquakes/)
 
 ## Level- 1
 ### Visulaization of EarthQuakes with their depth and magnitude
@@ -12,7 +13,7 @@ We have used earthquake data of past 7 days to visulaize using leaflet and mapbo
   - Earthquakes with higher magnitudes appear larger and earthquakes with greater depth appear darker in color.
   - Every Marker is bounded with the popup that provide additional information about the earthquake when a marker is clicked.
   - Created a legend that would provide context our map data.
-  ![alt-text]()
+  ![alt-text](https://github.com/shaveta08/Science-of-Earthquakes/blob/master/images/Capture1.PNG)
   
  ## Level - 2
  ### Visulaization of Tectonic plates and seismic activity
@@ -21,11 +22,13 @@ We have used earthquake data of past 7 days to visulaize using leaflet and mapbo
   - Plotting a second data set on our map.
   - Adding a number of base maps to choose from as well as separate out our two different data sets into overlays that can be turned on and off independently.
   - Adding layer controls to our map.
-![alt-text]()
+![alt-text](https://github.com/shaveta08/Science-of-Earthquakes/blob/master/images/Capture2.PNG)
 
 ## Level - 3 
 ### Visulaization of Basic Earthquake Data using Clusters and HeatMap Plugins.
 * Adding more overlays to the map by creating cluster of earthquake dataset.
 * Also Adding Heatmap to visulaze the earthquake dataset.
+![alt-text](https://github.com/shaveta08/Science-of-Earthquakes/blob/master/images/Capture3.PNG)
+![alt-text](https://github.com/shaveta08/Science-of-Earthquakes/blob/master/images/Capture4.PNG)
 
 
